@@ -21,9 +21,33 @@ public class Drive : MonoBehaviour
         Vector3 tankForward = transform.up;
         Vector3 fuelDirection = fuel.transform.position - transform.position;
 
-        Debug.DrawRay(this.transform.position, tankForward, Color.green, 2);
-        Debug.DrawRay(this.transform.position, fuelDirection, Color.red, 2);
+        Debug.DrawRay(transform.position, tankForward, Color.green, 4);
+        Debug.DrawRay(transform.position, fuelDirection, Color.red, 4);
+
+        float dot = tankForward.x * fuelDirection.x + tankForward.y * fuelDirection.y;
+        float angle = Mathf.Acos(dot / (tankForward.magnitude * fuelDirection.magnitude));
+
+        Debug.Log("Angle: " + angle * Mathf.Rad2Deg);
+        Debug.Log("Unity Angle: " + Vector3.Angle(tankForward, fuelDirection));
+
+        int clockwise = 1;
+        if (Cross(tankForward, fuelDirection).z < 0)
+            clockwise = -1;
+
+        transform.Rotate(0, 0, angle * Mathf.Rad2Deg * clockwise);
+        
     }
+
+    Vector3 Cross(Vector3 v, Vector3 w)
+    {
+        float xMult = v.y * w.z - v.z * w.y;
+        float yMult = v.x * w.z - v.z * w.x;
+        float zMult = v.x * w.y - v.y * w.x;
+
+        return(new Vector3(xMult, yMult, zMult));
+
+    }
+
     void CalculateDistance()
     {
         //This one does two dimensions
