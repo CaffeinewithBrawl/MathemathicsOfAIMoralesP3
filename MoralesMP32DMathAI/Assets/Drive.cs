@@ -15,6 +15,15 @@ public class Drive : MonoBehaviour
     {
 
     }
+
+    void CalculateAngle()
+    {
+        Vector3 tankForward = transform.up;
+        Vector3 fuelDirection = fuel.transform.position - transform.position;
+
+        Debug.DrawRay(this.transform.position, tankForward, Color.green, 2);
+        Debug.DrawRay(this.transform.position, fuelDirection, Color.red, 2);
+    }
     void CalculateDistance()
     {
         //This one does two dimensions
@@ -54,6 +63,7 @@ public class Drive : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             CalculateDistance();
+            CalculateAngle();
         }
 
     }
