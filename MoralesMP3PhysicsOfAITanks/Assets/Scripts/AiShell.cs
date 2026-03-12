@@ -1,18 +1,11 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Shell : MonoBehaviour
+public class AiShell : MonoBehaviour
 {
     public GameObject explosion;
-    float speed = 0f;
-    float yspeed = 0f;
-    float mass = 10;
-    float force = 2;
-    float drag = 5;
-    float gravity = -9.8f;
-    float gAccel;
-    float accleration; 
+    
 
     void OnCollisionEnter(Collision col)
     {
@@ -27,17 +20,12 @@ public class Shell : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        accleration = force / mass;
-        speed += accleration * 1;
-        gAccel = gravity / mass;
-
+        
     }
 
     // Update is called once per frame
-    void LateUpdate()
+    void Update()
     {
-        speed *= (1 - Time.deltaTime * drag);
-        yspeed += gAccel * Time.deltaTime;
-        transform.Translate(0, yspeed, speed);
+        
     }
 }

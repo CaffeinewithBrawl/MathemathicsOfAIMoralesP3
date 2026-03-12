@@ -178,7 +178,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 459861193}
   m_LocalRotation: {x: -0.083644755, y: -0, z: -0.00000001117587, w: 0.99649566}
-  m_LocalPosition: {x: 0.000000054668817, y: 0.47899997, z: 0.9790001}
+  m_LocalPosition: {x: 0, y: 0.593, z: 1.296}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -385,7 +385,7 @@ GameObject:
   - component: {fileID: 729810331}
   m_Layer: 0
   m_Name: Ground
-  m_TagString: Untagged
+  m_TagString: tank
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -576,7 +576,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1019156113}
   m_LocalRotation: {x: -0.09518893, y: -0, z: 0.00000001117587, w: 0.9954592}
-  m_LocalPosition: {x: 0.000000054668817, y: 0.48100007, z: 0.9810004}
+  m_LocalPosition: {x: 0, y: 0.645, z: 1.378}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
