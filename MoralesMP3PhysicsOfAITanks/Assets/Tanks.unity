@@ -154,6 +154,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gun: {fileID: 1019156114}
   bulletObj: {fileID: 9162047389006064978, guid: 18d4831b417f140bf8b372c93d45cd40, type: 3}
+  enemy: {fileID: 620903246}
+  turretBase: {fileID: 1081430726}
 --- !u!1 &459861193
 GameObject:
   m_ObjectHideFlags: 0
