@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEditor.Experimental.GraphView;
+using UnityEditor.UI;
+using UnityEditor;
+using Unity.VisualScripting;
 
 
 
@@ -84,18 +88,89 @@ public class FindPathAStar : MonoBehaviour
 
         locations.Shuffle();
 
-        Vector3 startLocation = new Vector3(locations[0].x, 0, locations[0].z);
+        Vector3 startLocation = new Vector3(locations[0].x * maze.scale, 0, locations[0].z * maze.scale);
         startNode = new PathMarker(new MapLocation(locations[0].x, locations[0].z), 0, 0, 0,
             Instantiate(start, startLocation, Quaternion.identity), null);
 
-        Vector3 goalLocation = new Vector3(locations[1].x, 0, locations[1].z);
+        Vector3 goalLocation = new Vector3(locations[1].x * maze.scale, 0, locations[1].z * maze.scale);
         goalNode = new PathMarker(new MapLocation(locations[1].x, locations[1].z), 0, 0, 0,
             Instantiate(end, startLocation, Quaternion.identity), null);
 
-
+        open.Clear();
+        closed.Clear();
+        open.Add(startNode);
+        lastPos = startNode;
 
     }
 
+    void Search(PathMarker thisNode)
+    {
+        if (thisNode == null)
+            return;
+        if(thisNode.Equals(goalNode)) 
+        {
+            done = true;
+            return;  //goal has been found
+        }
+        foreach(MapLocation dir in maze.directions)
+        {
+            MapLocation neighbour = dir + thisNode.location; //define what "neighbour" is
+            if (maze.map[neighbour.x, neighbour.z] == 1) continue;
+            if(neighbour.x < 1 || neighbour.x >= maze.width || neighbour.z < 1 || neighbour.z >= maze.depth) continue;
+            if (IsClosed(neighbour)) continue;
+
+            float G = Vector2.Distance(thisNode.location.ToVector(), neighbour.ToVector()) + thisNode.G;
+            float H = Vector2.Distance(neighbour.ToVector(), goalNode.location.ToVector());
+            float F = G + H;
+
+            GameObject pathBlock = Instantiate(pathP, new Vector3(neighbour.x * maze.scale, 0, neighbour.z * maze.scale), Quaternion.identity);
+
+            TextMesh[] values = pathBlock.GetComponentsInChildren<TextMesh>();
+            values[0].text = "G: " + G.ToString("0.00");
+            values[1].text = "H: " + H.ToString("0.00");
+            values[2].text = "F: " + F.ToString("0.00");
+
+            if(!UpdateMarker(neighbour, G, H, F, thisNode))
+            {
+                open.Add(new PathMarker(neighbour, G, H, F, pathBlock, thisNode));
+            }
+        }
+
+        open = open.OrderBy(p => p.F).ThenBy(n => n.H).ToList<PathMarker>();
+        PathMarker pm = (PathMarker)open.ElementAt(0);
+        closed.Add(pm);
+
+        open.RemoveAt(0);
+        pm.marker.GetComponent<Renderer>().material = closedMaterial;
+
+        lastPos = pm;
+       
+    }
+
+    bool UpdateMarker(MapLocation pos, float g, float h, float f, PathMarker prt)
+    {
+        foreach (PathMarker p in open)
+        {
+           if (p.location.Equals(pos))
+            {
+                p.G = g;
+                p.H = h;
+                p.F = f;
+                p.parent = prt;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool IsClosed(MapLocation marker)
+    {
+        foreach(PathMarker p in closed)
+        {
+            if (p.location.Equals(marker)) return true;
+        }
+        return false;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -103,9 +178,25 @@ public class FindPathAStar : MonoBehaviour
         
     }
 
+    void GetPath()
+    {
+        RemoveAllMarkers();
+        PathMarker begin = lastPos;
+
+        while(!startNode.Equals(begin) && begin != null)
+        {
+            Instantiate(pathP, new Vector3(begin.location.x * maze.scale, 0, begin.location.z * maze.scale), Quaternion.identity);
+            begin = begin.parent;
+        }
+
+        Instantiate(pathP, new Vector3(startNode.location.x * maze.scale, 0, startNode.location.z * maze.scale), Quaternion.identity);
+    }
+
     // Update is called once per frame
     void Update()
     {
        if(Input.GetKeyDown(KeyCode.P)) BeginSearch();
+       if(Input.GetKeyDown(KeyCode.C) && !done) Search(lastPos);
+        if (Input.GetKeyDown(KeyCode.M)) GetPath();
     }
 }
